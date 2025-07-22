@@ -236,13 +236,13 @@ function setupHandlers() {
         // Schedule new job - every 60 seconds
         const intervalId = setInterval(() => {
             sendCryptoUpdate(chatId);
-        }, 60000);
+        }, 120000);
         
         activeJobs.set(chatId, intervalId);
         
         const welcomeMsg = `👋 Hello ${userName}!\n\n` +
             `🤖 **Crypto Price Bot** is now active!\n\n` +
-            `📊 You'll receive top 5 crypto prices every minute\n` +
+            `📊 You'll receive top 5 crypto prices every 2 minutes\n` +
             `🔄 First update in 3 seconds...\n\n` +
             `**Commands:**\n` +
             `• /start - Start updates\n` +

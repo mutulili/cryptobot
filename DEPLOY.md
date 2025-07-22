@@ -42,13 +42,13 @@
    - Should see: `📢 Auto-posting to @legitairdropsfb...`
 
 2. **Test Your Channel**
-   - Check @legitairdropsfb for new posts every minute
+   - Check @legitairdropsfb for new posts every 2 minutes
    - Posts should continue even when your computer is off
 
 ## ✅ Success!
 
 Your bot is now running 24/7 in the cloud! It will:
-- ✅ Post to @legitairdropsfb every minute
+- ✅ Post to @legitairdropsfb every 2 minutes
 - ✅ Work even when you're offline
 - ✅ Automatically restart if it crashes
 - ✅ Handle multiple users simultaneously

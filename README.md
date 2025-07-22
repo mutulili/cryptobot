@@ -6,7 +6,7 @@ A Node.js Telegram bot that fetches and posts cryptocurrency prices to the @legi
 
 - 🚀 Fetches top 5 cryptocurrencies (excluding USDT)
 - 📊 Shows current prices and 24h price changes
-- 🔄 Automatic updates every minute
+- 🔄 Automatic updates every 2 minutes
 - 📢 Can post directly to @legitairdropsfb channel
 - 💎 Clean, formatted messages with emojis
 

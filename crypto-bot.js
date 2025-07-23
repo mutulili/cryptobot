@@ -407,6 +407,10 @@ async function main() {
         const me = await botInstance.getMe();
         log(`✅ Bot connected: @${me.username}`);
         
+        // Delete any existing webhooks to prevent conflicts
+        await botInstance.deleteWebhook();
+        log('🗑️ Cleared any existing webhooks');
+        
         // Start auto-posting to channel
         startChannelPosting();
         

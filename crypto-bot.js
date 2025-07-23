@@ -431,7 +431,7 @@ async function main() {
         log('• /prices - Get current prices');
         log(`• /channel - Post update to ${CHANNEL}`);
         log('');
-        log(`📢 Auto-posting to ${CHANNEL} every 2 minutes promoting ${PROMOTED_CHANNEL}`);
+        log(`📢 Auto-posting to ${CHANNEL} every 5 minutes promoting ${PROMOTED_CHANNEL}`);
         
     } catch (error) {
         log(`❌ Failed to start bot: ${error.message}`);

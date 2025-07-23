@@ -13,9 +13,10 @@ let botInstance = null;
 // Bot configuration
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const PORT = process.env.PORT || 3000;
-const CHANNEL = '@legitairdropsfb';
+const CHANNEL = '@cryptoprices254';
+const PROMOTED_CHANNEL = '@legitairdropsfb';
 
-// Auto-posting interval (60 seconds)
+// Auto-posting interval (2 minutes)
 let channelPostingInterval = null;
 
 // CoinGecko API configuration
@@ -186,7 +187,8 @@ function formatCryptoMessage(cryptos) {
     
     const now = new Date();
     message += `🔄 Updated at ${now.toLocaleTimeString()}`;
-    message += `\n\n💎 Join ${CHANNEL} for exclusive airdrops and crypto updates!`;
+    message += `\n\n💎 Join ${PROMOTED_CHANNEL} for exclusive airdrops and crypto signals!`;
+    message += `\n🚀 Follow us for daily crypto updates and opportunities!`;
     
     return message;
 }
@@ -216,6 +218,47 @@ async function sendCryptoUpdate(chatId) {
     }
 }
 
+// Auto-post to channel function
+async function autoPostToChannel() {
+    try {
+        log(`📢 Auto-posting to ${CHANNEL}...`);
+        
+        const cryptos = await getCryptoData();
+        const message = formatCryptoMessage(cryptos);
+        
+        // Post to the channel
+        await botInstance.sendMessage(CHANNEL, message, { 
+            parse_mode: 'Markdown',
+            disable_web_page_preview: true
+        });
+        
+        log(`✅ Auto-posted to ${CHANNEL} successfully`);
+        
+    } catch (error) {
+        log(`❌ Error auto-posting to channel: ${error.message}`);
+    }
+}
+
+// Start auto-posting to channel
+function startChannelPosting() {
+    if (channelPostingInterval) {
+        clearInterval(channelPostingInterval);
+    }
+    
+    // Post immediately, then every 2 minutes
+    autoPostToChannel();
+    channelPostingInterval = setInterval(autoPostToChannel, 120000); // 2 minutes
+    log(`📢 Auto-posting to ${CHANNEL} every 2 minutes...`);
+}
+
+// Stop auto-posting to channel
+function stopChannelPosting() {
+    if (channelPostingInterval) {
+        clearInterval(channelPostingInterval);
+        channelPostingInterval = null;
+        log('🛑 Stopped auto-posting to channel');
+    }
+}
 // Start command handler
 function setupHandlers() {
     if (!botInstance) return;
@@ -249,7 +292,7 @@ function setupHandlers() {
             `• /stop - Stop updates\n` +
             `• /prices - Get prices now\n` +
             `• /channel - Post to ${CHANNEL}\n\n` +
-            `💎 Join ${CHANNEL} for exclusive airdrops and crypto signals!`;
+            `💎 Join ${PROMOTED_CHANNEL} for exclusive airdrops and crypto signals!`;
         
         await botInstance.sendMessage(chatId, welcomeMsg, { parse_mode: 'Markdown' });
         
@@ -361,6 +404,9 @@ async function main() {
         const me = await botInstance.getMe();
         log(`✅ Bot connected: @${me.username}`);
         
+        // Start auto-posting to channel
+        startChannelPosting();
+        
         // Start polling
         await botInstance.startPolling();
         
@@ -375,6 +421,7 @@ async function main() {
         });
         
         log(`📢 Target channel: ${CHANNEL}`);
+        log(`🎯 Promoted channel: ${PROMOTED_CHANNEL}`);
         log('🔄 Bot is now running and listening for commands...');
         log(`🌐 Server ready on port ${PORT}`);
         log('');
@@ -383,6 +430,8 @@ async function main() {
         log('• /stop - Stop updates');
         log('• /prices - Get current prices');
         log(`• /channel - Post update to ${CHANNEL}`);
+        log('');
+        log(`📢 Auto-posting to ${CHANNEL} every 2 minutes promoting ${PROMOTED_CHANNEL}`);
         
     } catch (error) {
         log(`❌ Failed to start bot: ${error.message}`);

@@ -10,6 +10,7 @@
   "scripts": {
     "start": "node crypto-bot.js",
     "dev": "node crypto-bot.js",
+    "build": "echo 'No build step required for this Node.js application'",
     "pm2:start": "pm2 start ecosystem.config.js",
     "pm2:stop": "pm2 stop crypto-bot",
     "pm2:restart": "pm2 restart crypto-bot",

@@ -11,12 +11,12 @@ const PID_FILE = path.join(__dirname, 'bot.pid');
 let botInstance = null;
 
 // Bot configuration
-const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8014754930:AAG3FxXaw4AAiJfP5dPmoV5HoqZirR6Qvwc';
 const PORT = process.env.PORT || 3000;
-const CHANNEL = '@cryptoprices254';
-const PROMOTED_CHANNEL = '@legitairdropsfb';
+const CHANNEL = process.env.TELEGRAM_CHANNEL || '@cryptoprices254';
+const PROMOTED_CHANNEL = process.env.PROMOTED_CHANNEL || '@legitairdropsfb';
 
-// Auto-posting interval (2 minutes)
+// Auto-posting interval (5 minutes to avoid rate limits)
 let channelPostingInterval = null;
 
 // CoinGecko API configuration
@@ -247,8 +247,8 @@ function startChannelPosting() {
     
     // Post immediately, then every 2 minutes
     autoPostToChannel();
-    channelPostingInterval = setInterval(autoPostToChannel, 120000); // 2 minutes
-    log(`📢 Auto-posting to ${CHANNEL} every 2 minutes...`);
+    channelPostingInterval = setInterval(autoPostToChannel, 300000); // 5 minutes
+    log(`📢 Auto-posting to ${CHANNEL} every 5 minutes...`);
 }
 
 // Stop auto-posting to channel
@@ -279,7 +279,7 @@ function setupHandlers() {
         // Schedule new job - every 60 seconds
         const intervalId = setInterval(() => {
             sendCryptoUpdate(chatId);
-        }, 120000);
+        }, 300000); // 5 minutes
         
         activeJobs.set(chatId, intervalId);
         

@@ -1,6 +1,6 @@
 # Telegram Crypto Bot for @legitairdropsfb
 
-A Node.js Telegram bot that fetches and posts cryptocurrency prices to the @legitairdropsfb channel.
+A Node.js Telegram bot that fetches cryptocurrency prices from CoinMarketCap and posts to channels.
 
 ## Features
 
@@ -26,6 +26,7 @@ A Node.js Telegram bot that fetches and posts cryptocurrency prices to the @legi
 ## Environment Variables
 
 - `TELEGRAM_BOT_TOKEN` - Your Telegram bot token
+- `CMC_API_KEY` - Your CoinMarketCap API key (optional, uses demo key by default)
 - `TELEGRAM_CHANNEL` - Target channel (default: @legitairdropsfb)
 
 ## Usage
@@ -35,7 +36,7 @@ A Node.js Telegram bot that fetches and posts cryptocurrency prices to the @legi
 3. Use `/channel` to post to the @legitairdropsfb channel
 4. Use `/stop` to stop updates
 
-The bot will automatically fetch crypto data from CoinGecko API and format it nicely for Telegram.
+The bot will automatically fetch crypto data from CoinMarketCap API and format it nicely for Telegram.
 
 ## Hosting Options
 

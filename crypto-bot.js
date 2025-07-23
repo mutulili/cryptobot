@@ -15,18 +15,17 @@ const TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8014754930:AAG3FxXaw4AAiJfP5dPm
 const PORT = process.env.PORT || 3000;
 const CHANNEL = process.env.TELEGRAM_CHANNEL || '@cryptoprices254';
 const PROMOTED_CHANNEL = process.env.PROMOTED_CHANNEL || '@legitairdropsfb';
+const CMC_API_KEY = process.env.CMC_API_KEY || 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c'; // Demo key
 
 // Auto-posting interval (5 minutes to avoid rate limits)
 let channelPostingInterval = null;
 
-// CoinGecko API configuration
-const API_URL = "https://api.coingecko.com/api/v3/coins/markets";
+// CoinMarketCap API configuration
+const API_URL = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
 const API_PARAMS = {
-    vs_currency: "usd",
-    order: "market_cap_desc",
-    per_page: 10,
-    page: 1,
-    sparkline: false
+    start: 1,
+    limit: 10,
+    convert: 'USD'
 };
 
 // Check for existing instance
@@ -117,23 +116,27 @@ function log(message) {
     console.log(`[${new Date().toISOString()}] ${message}`);
 }
 
-// Fetch cryptocurrency data from CoinGecko API
+// Fetch cryptocurrency data from CoinMarketCap API
 async function getCryptoData() {
     try {
-        log('🔄 Fetching crypto data from CoinGecko...');
+        log('🔄 Fetching crypto data from CoinMarketCap...');
         
-        const response = await axios.get(API_URL, { 
+        const response = await axios.get(API_URL, {
             params: API_PARAMS,
-            timeout: 15000
+            timeout: 15000,
+            headers: {
+                'X-CMC_PRO_API_KEY': CMC_API_KEY,
+                'Accept': 'application/json'
+            }
         });
         
         log(`📡 API Response: ${response.status}`);
         
         if (response.status === 200) {
-            const data = response.data;
+            const data = response.data.data;
             // Filter out USDT and get top 5
             const filteredData = data.filter(crypto => 
-                crypto.symbol && crypto.symbol.toUpperCase() !== 'USDT'
+                crypto.symbol && crypto.symbol !== 'USDT'
             );
             const result = filteredData.slice(0, 5);
             log(`✅ Successfully fetched ${result.length} cryptocurrencies`);
@@ -158,9 +161,9 @@ function formatCryptoMessage(cryptos) {
     
     cryptos.forEach((crypto, index) => {
         const name = crypto.name || 'Unknown';
-        const symbol = (crypto.symbol || '').toUpperCase();
-        const price = crypto.current_price || 0;
-        const change24h = crypto.price_change_percentage_24h || 0;
+        const symbol = crypto.symbol || '';
+        const price = crypto.quote?.USD?.price || 0;
+        const change24h = crypto.quote?.USD?.percent_change_24h || 0;
         
         // Format price
         let priceStr;
@@ -247,8 +250,8 @@ function startChannelPosting() {
     
     // Post immediately, then every 2 minutes
     autoPostToChannel();
-    channelPostingInterval = setInterval(autoPostToChannel, 300000); // 5 minutes
-    log(`📢 Auto-posting to ${CHANNEL} every 5 minutes...`);
+    channelPostingInterval = setInterval(autoPostToChannel, 120000); // 2 minutes
+    log(`📢 Auto-posting to ${CHANNEL} every 2 minutes...`);
 }
 
 // Stop auto-posting to channel
@@ -279,7 +282,7 @@ function setupHandlers() {
         // Schedule new job - every 60 seconds
         const intervalId = setInterval(() => {
             sendCryptoUpdate(chatId);
-        }, 300000); // 5 minutes
+        }, 120000); // 2 minutes
         
         activeJobs.set(chatId, intervalId);
         
@@ -392,7 +395,7 @@ async function main() {
         setupHandlers();
         
         // Test API first
-        log('🧪 Testing CoinGecko API...');
+        log('🧪 Testing CoinMarketCap API...');
         const testData = await getCryptoData();
         if (testData && testData.length > 0) {
             log(`✅ API test successful - got ${testData.length} cryptos`);
@@ -431,7 +434,7 @@ async function main() {
         log('• /prices - Get current prices');
         log(`• /channel - Post update to ${CHANNEL}`);
         log('');
-        log(`📢 Auto-posting to ${CHANNEL} every 5 minutes promoting ${PROMOTED_CHANNEL}`);
+        log(`📢 Auto-posting to ${CHANNEL} every 2 minutes promoting ${PROMOTED_CHANNEL}`);
         
     } catch (error) {
         log(`❌ Failed to start bot: ${error.message}`);

@@ -15,5 +15,10 @@
     "pm2:restart": "pm2 restart crypto-bot",
     "pm2:logs": "pm2 logs crypto-bot",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "node-telegram-bot-api": "^0.66.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.0"
   }
 }
